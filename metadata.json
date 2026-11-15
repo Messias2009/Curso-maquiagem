@@ -1,0 +1,6 @@
+{
+  "name": "Universo Maquiagem",
+  "description": "Página oficial do curso online Universo Maquiagem — aprenda maquiagem do zero ao avançado com aulas gravadas e acesso vitalício.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

@@ -1,0 +1,126 @@
+import { useEffect } from 'react';
+import { ArrowLeft, CheckCircle2, Mail, ShieldAlert } from 'lucide-react';
+import { trackConfirmedPurchase } from '../lib/metaPixel.ts';
+import type { SiteConfig } from '../types/config.ts';
+
+interface PaymentConfirmationPageProps {
+  config: SiteConfig;
+}
+
+export function PaymentConfirmationPage({ config }: PaymentConfirmationPageProps) {
+  const params = new URLSearchParams(window.location.search);
+  const status = (params.get('payment_status') || params.get('status') || '').toLowerCase();
+  const confirmedParam = params.get('confirmed');
+  const orderId = params.get('order_id') || params.get('tx_ref') || params.get('transaction_id') || '';
+
+  const isConfirmed =
+    status === 'confirmed' ||
+    status === 'paid' ||
+    status === 'approved' ||
+    confirmedParam === 'true' ||
+    confirmedParam === '1';
+
+  useEffect(() => {
+    if (isConfirmed && config.metaPixelId) {
+      const effectiveOrderId = orderId || 'confirmed_session';
+      trackConfirmedPurchase(
+        effectiveOrderId,
+        config.courseName,
+        config.priceNumeric,
+        config.currencyCode,
+      );
+    }
+  }, [isConfirmed, orderId, config.metaPixelId, config.courseName, config.priceNumeric, config.currencyCode]);
+
+  const cleanWa = config.whatsappNumber.replace(/\D/g, '');
+  const waHref = cleanWa
+    ? `https://wa.me/${cleanWa}?text=${encodeURIComponent(
+        'Olá! Já concluí o pagamento do curso Universo Maquiagem e gostaria de confirmar o meu acesso.',
+      )}`
+    : '/';
+
+  return (
+    <main className="min-h-screen bg-[#FCF9F7] flex items-center justify-center px-4 py-16">
+      <div className="max-w-xl w-full bg-white rounded-3xl border border-[#E7D8D2] shadow-lg p-8 sm:p-10 text-center">
+        {isConfirmed ? (
+          <>
+            <div className="w-16 h-16 rounded-full bg-[#EAF7EE] text-[#1E7E3E] flex items-center justify-center mx-auto mb-6">
+              <CheckCircle2 className="w-9 h-9" />
+            </div>
+            <p className="text-xs font-semibold tracking-[0.18em] uppercase text-[#9E7840] mb-2">
+              Inscrição Confirmada
+            </p>
+            <h1 className="font-display text-3xl sm:text-4xl font-semibold text-[#2A1F1D] mb-4">
+              Pagamento confirmado com sucesso!
+            </h1>
+            <p className="text-base text-[#5A4743] leading-relaxed mb-6">
+              Obrigada por escolher o <strong>{config.courseName}</strong>. As instruções para
+              aceder às aulas gravadas digitais são enviadas imediatamente após a confirmação do seu
+              pagamento.
+            </p>
+
+            {orderId && (
+              <div className="mb-6 rounded-xl bg-[#F6ECE8] border border-[#E7D8D2] px-4 py-3 text-sm text-[#2A1F1D]">
+                Referência do pedido: <span className="font-semibold tabular-nums">{orderId}</span>
+              </div>
+            )}
+
+            <div className="space-y-3">
+              {cleanWa && (
+                <a
+                  href={waHref}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center justify-center gap-2 w-full py-3.5 px-6 rounded-xl bg-[#25D366] hover:bg-[#1EBE5D] text-white font-semibold transition-colors"
+                >
+                  Falar com o Suporte no WhatsApp
+                </a>
+              )}
+              <a
+                href="/"
+                className="inline-flex items-center justify-center gap-2 w-full py-3.5 px-6 rounded-xl border border-[#E7D8D2] hover:bg-[#F6ECE8] text-[#2A1F1D] font-medium transition-colors"
+              >
+                <ArrowLeft className="w-4 h-4" />
+                Voltar à página do curso
+              </a>
+            </div>
+          </>
+        ) : (
+          <>
+            <div className="w-16 h-16 rounded-full bg-[#F6ECE8] text-[#9E7840] flex items-center justify-center mx-auto mb-6">
+              <ShieldAlert className="w-8 h-8" />
+            </div>
+            <h1 className="font-display text-3xl font-semibold text-[#2A1F1D] mb-3">
+              Aguardando confirmação do pagamento
+            </h1>
+            <p className="text-base text-[#5A4743] leading-relaxed mb-6">
+              Esta página confirma o acesso digital apenas após a validação do pagamento pelo
+              checkout oficial. Se já realizou o pagamento e precisa de ajuda, contacte o nosso
+              suporte.
+            </p>
+            <div className="space-y-3">
+              {cleanWa && (
+                <a
+                  href={waHref}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center justify-center gap-2 w-full py-3.5 px-6 rounded-xl bg-[#B85D6E] hover:bg-[#9C4959] text-white font-semibold transition-colors"
+                >
+                  <Mail className="w-4 h-4" />
+                  Contactar Suporte
+                </a>
+              )}
+              <a
+                href="/"
+                className="inline-flex items-center justify-center gap-2 w-full py-3.5 px-6 rounded-xl border border-[#E7D8D2] hover:bg-[#F6ECE8] text-[#2A1F1D] font-medium transition-colors"
+              >
+                <ArrowLeft className="w-4 h-4" />
+                Voltar à página principal
+              </a>
+            </div>
+          </>
+        )}
+      </div>
+    </main>
+  );
+}
