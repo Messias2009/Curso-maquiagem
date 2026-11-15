@@ -137,17 +137,8 @@ export default function App() {
                   atender as suas primeiras clientes.
                 </p>
 
-                {/* CTA Contado no Início */}
+                {/* CTA inicial sem exibição de preços; valores aparecem apenas na secção da oferta */}
                 <div className="mt-7 space-y-3">
-                  {config.comparePriceText && (
-                    <p className="text-sm sm:text-base font-semibold text-[#4A2835] tabular-nums">
-                      Antes:{' '}
-                      <span className="line-through text-[#8D5B6D]">{config.comparePriceText}</span>{' '}
-                      · Agora por apenas{' '}
-                      <strong className="text-[#C21F5E] text-lg">{config.priceText}</strong>
-                    </p>
-                  )}
-
                   <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3.5">
                     <a
                       href="#demonstracao"
