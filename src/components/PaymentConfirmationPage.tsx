@@ -1,6 +1,4 @@
-import { useEffect } from 'react';
 import { ArrowLeft, CheckCircle2, Mail, ShieldAlert } from 'lucide-react';
-import { trackConfirmedPurchase } from '../lib/metaPixel.ts';
 import type { SiteConfig } from '../types/config.ts';
 
 interface PaymentConfirmationPageProps {
@@ -19,18 +17,6 @@ export function PaymentConfirmationPage({ config }: PaymentConfirmationPageProps
     status === 'approved' ||
     confirmedParam === 'true' ||
     confirmedParam === '1';
-
-  useEffect(() => {
-    if (isConfirmed && config.metaPixelId) {
-      const effectiveOrderId = orderId || 'confirmed_session';
-      trackConfirmedPurchase(
-        effectiveOrderId,
-        config.courseName,
-        config.priceNumeric,
-        config.currencyCode,
-      );
-    }
-  }, [isConfirmed, orderId, config.metaPixelId, config.courseName, config.priceNumeric, config.currencyCode]);
 
   const supportMailHref = config.supportEmail
     ? `mailto:${config.supportEmail}?subject=${encodeURIComponent(
