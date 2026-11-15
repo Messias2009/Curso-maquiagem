@@ -106,6 +106,17 @@ export default function App() {
     <div id="topo" className="min-h-screen flex flex-col bg-white text-[#230F17]">
       <Header courseName={config.courseName} logoUrl={config.logoUrl} />
 
+      <div className="bg-[#230F17] text-white border-b border-[#C21F5E]">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 py-3 flex flex-wrap items-center justify-center gap-x-3 gap-y-2 text-center">
+          <span className="text-xs sm:text-sm font-extrabold tracking-[0.12em] uppercase text-[#F9B4CD]">Oferta termina em</span>
+          <span className="inline-flex items-center gap-2 rounded-lg bg-[#C21F5E] px-3 py-1.5 text-sm sm:text-base font-extrabold tabular-nums" aria-live="off">
+            <Clock className="w-4 h-4" />
+            {countdown}
+          </span>
+          <a href="#oferta" className="text-xs sm:text-sm font-bold underline underline-offset-4 decoration-[#F9B4CD] hover:text-[#F9B4CD] transition-colors">VER OFERTA</a>
+        </div>
+      </div>
+
       <main className="flex-1">
         {/* 1. HERO — COM CTA CONTADO NO INÍCIO DA PÁGINA */}
         <section className="py-10 sm:py-16 lg:py-20 bg-gradient-to-br from-[#F9D2E1] via-[#FCE8F0] to-[#FFF5F8] border-b border-[#EBB9CB]">
@@ -138,21 +149,6 @@ export default function App() {
                   )}
 
                   <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3.5">
-                    <a
-                      href={config.checkoutUrl || '#oferta'}
-                      target={config.checkoutUrl ? '_blank' : undefined}
-                      rel={config.checkoutUrl ? 'noopener noreferrer' : undefined}
-                      onClick={handleCheckoutAction}
-                      className="inline-flex items-center justify-center gap-2.5 px-7 py-4 rounded-xl bg-[#C21F5E] hover:bg-[#9F164B] text-white text-sm sm:text-base font-bold shadow-lg transition-colors cursor-pointer whitespace-nowrap"
-                    >
-                      <span>QUERO GARANTIR O MEU ACESSO</span>
-                      <span className="inline-flex items-center gap-1 bg-black/25 px-2 py-0.5 rounded-md text-xs font-bold tabular-nums">
-                        <Clock className="w-3.5 h-3.5" />
-                        {countdown}
-                      </span>
-                      <ArrowRight className="w-5 h-5 shrink-0" />
-                    </a>
-
                     <a
                       href="#demonstracao"
                       className="inline-flex items-center justify-center px-6 py-4 rounded-xl bg-white border-2 border-[#C21F5E]/30 hover:border-[#C21F5E] text-[#230F17] text-sm font-bold transition-colors whitespace-nowrap"
