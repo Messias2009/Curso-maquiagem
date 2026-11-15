@@ -29,6 +29,10 @@ async function readSiteConfig(): Promise<SiteConfig> {
     return {
       ...DEFAULT_SITE_CONFIG,
       ...parsed,
+      metaPixelId:
+        typeof parsed.metaPixelId === 'string' && parsed.metaPixelId.trim()
+          ? parsed.metaPixelId.replace(/\\D/g, '')
+          : DEFAULT_SITE_CONFIG.metaPixelId,
       modules: Array.isArray(parsed.modules) ? parsed.modules : DEFAULT_SITE_CONFIG.modules,
       beforeAfterImages: Array.isArray(parsed.beforeAfterImages)
         ? parsed.beforeAfterImages
