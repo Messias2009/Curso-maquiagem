@@ -16,7 +16,7 @@ export const DEFAULT_SITE_CONFIG: SiteConfig = {
   courseImageUrl: '/src/assets/images/course_demo_black_women_1794763985917.jpg',
   videoUrl: '/assets/aistudio/demo_1cd600ca.mp4',
   videoPosterUrl: '/src/assets/images/video_poster_black_model_1794763988454.jpg',
-  metaPixelId: '',
+  metaPixelId: '1147104824905270',
   modules: [],
   beforeAfterImages: [
     {
