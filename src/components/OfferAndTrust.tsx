@@ -1,7 +1,7 @@
 import { useState } from 'react';
-import { Check, ChevronDown, Clock, Lock } from 'lucide-react';
+import { ArrowRight, Check, ChevronDown, Clock, Lock } from 'lucide-react';
 import type { SiteConfig } from '../types/config.ts';
-import { AttentionCtaButton, useCountdownTimer } from './CountdownCta.tsx';
+import { useOfferCountdown } from './CountdownHook.ts';
 import { SafeImage } from './SafeImage.tsx';
 
 interface OfferAndTrustProps {
@@ -10,52 +10,52 @@ interface OfferAndTrustProps {
   checkoutPendingNotice: boolean;
 }
 
-const FAQ_ITEMS = [
-  {
-    q: '1. Preciso ter experiência para começar?',
-    a: 'Não. O curso ensina desde os fundamentos básicos até técnicas avançadas, permitindo que comece do zero e evolua passo a passo.',
-  },
-  {
-    q: '2. Como funcionam as aulas gravadas?',
-    a: 'As aulas ficam gravadas para assistir no seu ritmo, pausar enquanto pratica e acompanhar cada detalhe das demonstrações.',
-  },
-  {
-    q: '3. Posso estudar pelo telemóvel?',
-    a: 'Sim. Todo o conteúdo funciona perfeitamente no telemóvel, tablet ou computador.',
-  },
-  {
-    q: '4. Durante quanto tempo terei acesso?',
-    a: 'O acesso é vitalício. Faz o pagamento uma única vez e pode voltar às aulas sempre que precisar.',
-  },
-  {
-    q: '5. Como recebo o curso depois do pagamento?',
-    a: 'É um produto 100% digital. Assim que o pagamento é confirmado no checkout oficial, recebe as instruções para aceder imediatamente.',
-  },
-  {
-    q: '6. Posso assistir às aulas mais de uma vez?',
-    a: 'Sim. Pode rever cada aula quantas vezes quiser até dominar todas as técnicas.',
-  },
-  {
-    q: '7. Como posso entrar em contacto com o suporte?',
-    a: 'Pode falar diretamente connosco clicando no botão verde do WhatsApp disponível nesta página.',
-  },
-  {
-    q: '8. Como funciona o pagamento?',
-    a: 'Ao clicar no botão de compra, é direcionada para o checkout oficial onde finaliza a inscrição de forma segura.',
-  },
-];
-
 export function OfferAndTrust({
   config,
   onCheckoutClick,
   checkoutPendingNotice,
 }: OfferAndTrustProps) {
   const [openFaq, setOpenFaq] = useState<number | null>(0);
-  const { formatted } = useCountdownTimer();
+  const countdown = useOfferCountdown();
+
+  const faqItems = [
+    {
+      q: '1. Preciso ter experiência para começar?',
+      a: 'Não. O curso ensina desde os fundamentos básicos até técnicas avançadas, permitindo que comece do zero e evolua passo a passo.',
+    },
+    {
+      q: '2. Como funcionam as aulas gravadas?',
+      a: 'As aulas ficam gravadas para assistir no seu ritmo, pausar enquanto pratica e acompanhar cada detalhe das demonstrações.',
+    },
+    {
+      q: '3. Posso estudar pelo telemóvel?',
+      a: 'Sim. Todo o conteúdo funciona perfeitamente no telemóvel, tablet ou computador.',
+    },
+    {
+      q: '4. Durante quanto tempo terei acesso?',
+      a: 'O acesso é vitalício. Faz o pagamento uma única vez e pode voltar às aulas sempre que precisar.',
+    },
+    {
+      q: '5. Como recebo o curso depois do pagamento?',
+      a: 'É um produto 100% digital. Assim que o pagamento é confirmado no checkout oficial, recebe as instruções para aceder imediatamente.',
+    },
+    {
+      q: '6. Posso assistir às aulas mais de uma vez?',
+      a: 'Sim. Pode rever cada aula quantas vezes quiser até dominar todas as técnicas.',
+    },
+    {
+      q: '7. Como posso entrar em contacto com o suporte?',
+      a: `Caso tenha alguma dúvida sobre o seu acesso, pode escrever para o nosso email oficial de suporte: ${config.supportEmail}.`,
+    },
+    {
+      q: '8. Como funciona o pagamento?',
+      a: 'Ao clicar no botão de compra, é direcionada para o checkout oficial onde finaliza a inscrição de forma segura.',
+    },
+  ];
 
   return (
     <>
-      {/* OFERTA ESPECIAL */}
+      {/* OFERTA ESPECIAL COM CTA CONTADO */}
       <section id="oferta" className="py-16 sm:py-24 bg-[#FADCE8] border-y border-[#EAB7CA]">
         <div className="max-w-4xl mx-auto px-4 sm:px-6">
           <div className="rounded-3xl bg-white border-2 border-[#EBB9CB] shadow-2xl overflow-hidden">
@@ -81,7 +81,7 @@ export function OfferAndTrust({
               </div>
               <div className="inline-flex items-center gap-2 bg-[#C21F5E] text-white px-4 py-2 rounded-xl text-xs sm:text-sm font-bold tabular-nums self-start sm:self-auto">
                 <Clock className="w-4 h-4" />
-                <span>Encerra em {formatted}</span>
+                <span>Termina em {countdown}</span>
               </div>
             </div>
 
@@ -111,9 +111,17 @@ export function OfferAndTrust({
               </div>
 
               <div className="md:col-span-5 rounded-2xl bg-[#FCEBF2] border border-[#EBB9CB] p-6 sm:p-7 text-center">
-                <p className="text-xs font-bold tracking-[0.16em] uppercase text-[#7E3450] mb-2">
-                  Valor do Curso
+                {config.comparePriceText && (
+                  <p className="text-sm font-semibold text-[#7E5463] tabular-nums mb-1">
+                    Antes:{' '}
+                    <span className="line-through text-[#9A687A]">{config.comparePriceText}</span>
+                  </p>
+                )}
+
+                <p className="text-xs font-bold tracking-[0.16em] uppercase text-[#C21F5E] mb-2">
+                  Agora por apenas
                 </p>
+
                 <div className="font-display text-5xl sm:text-[54px] font-bold text-[#230F17] tabular-nums leading-none">
                   {config.priceText}
                 </div>
@@ -122,19 +130,27 @@ export function OfferAndTrust({
                 </p>
 
                 <div className="mt-6">
-                  <AttentionCtaButton
-                    label="GARANTIR O MEU ACESSO"
-                    checkoutUrl={config.checkoutUrl}
+                  <a
+                    href={config.checkoutUrl || '#oferta'}
+                    target={config.checkoutUrl ? '_blank' : undefined}
+                    rel={config.checkoutUrl ? 'noopener noreferrer' : undefined}
                     onClick={onCheckoutClick}
-                    showCountdown
-                    fullWidth
-                  />
+                    className="inline-flex flex-col items-center justify-center gap-1 w-full py-4 px-5 rounded-xl bg-[#C21F5E] hover:bg-[#9F164B] text-white font-bold shadow-lg transition-colors cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#C21F5E]"
+                  >
+                    <span className="inline-flex items-center gap-2 text-base">
+                      <span>QUERO GARANTIR O MEU ACESSO</span>
+                      <ArrowRight className="w-5 h-5 shrink-0" />
+                    </span>
+                    <span className="inline-flex items-center gap-1.5 text-xs font-semibold text-white/90 tabular-nums">
+                      <Clock className="w-3.5 h-3.5" />
+                      <span>Oferta expira em {countdown}</span>
+                    </span>
+                  </a>
                 </div>
 
                 {checkoutPendingNotice && !config.checkoutUrl && (
                   <p className="mt-3 text-xs text-[#9F164B] bg-white rounded-lg p-3 border border-[#EBB9CB]">
-                    O link do checkout oficial está a ser atualizado. Em caso de dúvida, fale
-                    connosco pelo WhatsApp.
+                    O link do checkout oficial está a ser atualizado.
                   </p>
                 )}
 
@@ -161,7 +177,7 @@ export function OfferAndTrust({
           </div>
 
           <div className="space-y-3">
-            {FAQ_ITEMS.map((item, index) => {
+            {faqItems.map((item, index) => {
               const isOpen = openFaq === index;
               return (
                 <div
@@ -191,15 +207,6 @@ export function OfferAndTrust({
                 </div>
               );
             })}
-          </div>
-
-          <div className="mt-10 flex justify-center">
-            <AttentionCtaButton
-              label="QUERO GARANTIR O MEU ACESSO"
-              checkoutUrl={config.checkoutUrl}
-              onClick={onCheckoutClick}
-              showCountdown
-            />
           </div>
         </div>
       </section>

@@ -52,7 +52,7 @@ export function PurchaseNotifications({ courseName, priceText }: PurchaseNotific
 
   return (
     <div
-      className="fixed bottom-4 left-4 right-22 sm:right-auto sm:max-w-xs z-30 pointer-events-none"
+      className="fixed bottom-4 left-4 right-4 sm:right-auto sm:max-w-xs z-30 pointer-events-none"
       aria-live="polite"
     >
       <AnimatePresence mode="wait">

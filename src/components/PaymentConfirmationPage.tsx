@@ -32,12 +32,11 @@ export function PaymentConfirmationPage({ config }: PaymentConfirmationPageProps
     }
   }, [isConfirmed, orderId, config.metaPixelId, config.courseName, config.priceNumeric, config.currencyCode]);
 
-  const cleanWa = config.whatsappNumber.replace(/\D/g, '');
-  const waHref = cleanWa
-    ? `https://wa.me/${cleanWa}?text=${encodeURIComponent(
-        'Olá! Já concluí o pagamento do curso Universo Maquiagem e gostaria de confirmar o meu acesso.',
+  const supportMailHref = config.supportEmail
+    ? `mailto:${config.supportEmail}?subject=${encodeURIComponent(
+        `Suporte - ${config.courseName}`,
       )}`
-    : '/';
+    : '';
 
   return (
     <main className="min-h-screen bg-[#FCF9F7] flex items-center justify-center px-4 py-16">
@@ -47,38 +46,37 @@ export function PaymentConfirmationPage({ config }: PaymentConfirmationPageProps
             <div className="w-16 h-16 rounded-full bg-[#EAF7EE] text-[#1E7E3E] flex items-center justify-center mx-auto mb-6">
               <CheckCircle2 className="w-9 h-9" />
             </div>
-            <p className="text-xs font-semibold tracking-[0.18em] uppercase text-[#9E7840] mb-2">
+            <p className="text-xs font-semibold tracking-[0.18em] uppercase text-[#C21F5E] mb-2">
               Inscrição Confirmada
             </p>
-            <h1 className="font-display text-3xl sm:text-4xl font-semibold text-[#2A1F1D] mb-4">
+            <h1 className="font-display text-3xl sm:text-4xl font-semibold text-[#230F17] mb-4">
               Pagamento confirmado com sucesso!
             </h1>
-            <p className="text-base text-[#5A4743] leading-relaxed mb-6">
+            <p className="text-base text-[#4A2835] leading-relaxed mb-6">
               Obrigada por escolher o <strong>{config.courseName}</strong>. As instruções para
               aceder às aulas gravadas digitais são enviadas imediatamente após a confirmação do seu
               pagamento.
             </p>
 
             {orderId && (
-              <div className="mb-6 rounded-xl bg-[#F6ECE8] border border-[#E7D8D2] px-4 py-3 text-sm text-[#2A1F1D]">
+              <div className="mb-6 rounded-xl bg-[#FCE8F0] border border-[#EBB9CB] px-4 py-3 text-sm text-[#230F17]">
                 Referência do pedido: <span className="font-semibold tabular-nums">{orderId}</span>
               </div>
             )}
 
             <div className="space-y-3">
-              {cleanWa && (
+              {supportMailHref && (
                 <a
-                  href={waHref}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center justify-center gap-2 w-full py-3.5 px-6 rounded-xl bg-[#25D366] hover:bg-[#1EBE5D] text-white font-semibold transition-colors"
+                  href={supportMailHref}
+                  className="inline-flex items-center justify-center gap-2 w-full py-3.5 px-6 rounded-xl bg-[#C21F5E] hover:bg-[#9F164B] text-white font-semibold transition-colors"
                 >
-                  Falar com o Suporte no WhatsApp
+                  <Mail className="w-4 h-4" />
+                  Falar com o Suporte por Email
                 </a>
               )}
               <a
                 href="/"
-                className="inline-flex items-center justify-center gap-2 w-full py-3.5 px-6 rounded-xl border border-[#E7D8D2] hover:bg-[#F6ECE8] text-[#2A1F1D] font-medium transition-colors"
+                className="inline-flex items-center justify-center gap-2 w-full py-3.5 px-6 rounded-xl border border-[#EBB9CB] hover:bg-[#FCE8F0] text-[#230F17] font-medium transition-colors"
               >
                 <ArrowLeft className="w-4 h-4" />
                 Voltar à página do curso
@@ -87,32 +85,30 @@ export function PaymentConfirmationPage({ config }: PaymentConfirmationPageProps
           </>
         ) : (
           <>
-            <div className="w-16 h-16 rounded-full bg-[#F6ECE8] text-[#9E7840] flex items-center justify-center mx-auto mb-6">
+            <div className="w-16 h-16 rounded-full bg-[#FCE8F0] text-[#C21F5E] flex items-center justify-center mx-auto mb-6">
               <ShieldAlert className="w-8 h-8" />
             </div>
-            <h1 className="font-display text-3xl font-semibold text-[#2A1F1D] mb-3">
+            <h1 className="font-display text-3xl font-semibold text-[#230F17] mb-3">
               Aguardando confirmação do pagamento
             </h1>
-            <p className="text-base text-[#5A4743] leading-relaxed mb-6">
+            <p className="text-base text-[#4A2835] leading-relaxed mb-6">
               Esta página confirma o acesso digital apenas após a validação do pagamento pelo
               checkout oficial. Se já realizou o pagamento e precisa de ajuda, contacte o nosso
               suporte.
             </p>
             <div className="space-y-3">
-              {cleanWa && (
+              {supportMailHref && (
                 <a
-                  href={waHref}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center justify-center gap-2 w-full py-3.5 px-6 rounded-xl bg-[#B85D6E] hover:bg-[#9C4959] text-white font-semibold transition-colors"
+                  href={supportMailHref}
+                  className="inline-flex items-center justify-center gap-2 w-full py-3.5 px-6 rounded-xl bg-[#C21F5E] hover:bg-[#9F164B] text-white font-semibold transition-colors"
                 >
                   <Mail className="w-4 h-4" />
-                  Contactar Suporte
+                  Contactar Suporte por Email
                 </a>
               )}
               <a
                 href="/"
-                className="inline-flex items-center justify-center gap-2 w-full py-3.5 px-6 rounded-xl border border-[#E7D8D2] hover:bg-[#F6ECE8] text-[#2A1F1D] font-medium transition-colors"
+                className="inline-flex items-center justify-center gap-2 w-full py-3.5 px-6 rounded-xl border border-[#EBB9CB] hover:bg-[#FCE8F0] text-[#230F17] font-medium transition-colors"
               >
                 <ArrowLeft className="w-4 h-4" />
                 Voltar à página principal

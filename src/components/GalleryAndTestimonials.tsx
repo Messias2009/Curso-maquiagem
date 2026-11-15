@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { ChevronLeft, ChevronRight, Expand, X } from 'lucide-react';
 import type { GalleryImage, TestimonialImage } from '../types/config.ts';
+import { resolveAssetUrl } from '../lib/assetResolver.ts';
 import { SafeImage } from './SafeImage.tsx';
 
 interface GalleryAndTestimonialsProps {
@@ -379,8 +380,9 @@ export function GalleryAndTestimonials({
               )}
 
               <img
-                src={lightbox.items[lightbox.index].src}
+                src={resolveAssetUrl(lightbox.items[lightbox.index].src)}
                 alt={lightbox.items[lightbox.index].alt}
+                decoding="async"
                 referrerPolicy="no-referrer"
                 className="max-h-[78vh] w-auto max-w-full rounded-xl shadow-2xl object-contain bg-[#110B0D]"
               />

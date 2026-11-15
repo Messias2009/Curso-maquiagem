@@ -63,7 +63,8 @@ export function AdminPanel({ initialConfig, onConfigSaved }: AdminPanelProps) {
         const res = await fetch('/api/admin/verify', {
           headers: { Authorization: `Bearer ${token}` },
         });
-        if (res.ok) {
+        const ct = res.headers.get('content-type') || '';
+        if (res.ok && ct.includes('application/json')) {
           setVerified(true);
         } else {
           sessionStorage.removeItem(TOKEN_STORAGE_KEY);
@@ -89,6 +90,11 @@ export function AdminPanel({ initialConfig, onConfigSaved }: AdminPanelProps) {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ password }),
       });
+      const ct = res.headers.get('content-type') || '';
+      if (!ct.includes('application/json')) {
+        setLoginError('O painel administrativo requer o servidor Node ativo.');
+        return;
+      }
       const data = (await res.json()) as { token?: string; error?: string };
       if (!res.ok || !data.token) {
         setLoginError(data.error || 'Falha ao iniciar sessão.');
@@ -124,6 +130,14 @@ export function AdminPanel({ initialConfig, onConfigSaved }: AdminPanelProps) {
         },
         body: JSON.stringify({ filename: file.name, dataUrl }),
       });
+      const ct = res.headers.get('content-type') || '';
+      if (!ct.includes('application/json')) {
+        setSaveMessage({
+          type: 'error',
+          text: 'O envio de ficheiros requer o servidor Node ativo.',
+        });
+        return null;
+      }
       const data = (await res.json()) as { url?: string; error?: string };
       if (!res.ok || !data.url) {
         setSaveMessage({
@@ -154,6 +168,14 @@ export function AdminPanel({ initialConfig, onConfigSaved }: AdminPanelProps) {
         },
         body: JSON.stringify(draft),
       });
+      const ct = res.headers.get('content-type') || '';
+      if (!ct.includes('application/json')) {
+        setSaveMessage({
+          type: 'error',
+          text: 'Guardar alterações requer o servidor Node ativo.',
+        });
+        return;
+      }
       const data = (await res.json()) as SiteConfig & { error?: string };
       if (!res.ok) {
         setSaveMessage({ type: 'error', text: data.error || 'Erro ao guardar alterações.' });
@@ -374,7 +396,20 @@ export function AdminPanel({ initialConfig, onConfigSaved }: AdminPanelProps) {
 
               <div>
                 <label className="block text-sm font-medium text-[#2A1F1D] mb-1.5">
-                  Preço exibido na página
+                  Preço anterior (Antes)
+                </label>
+                <input
+                  type="text"
+                  value={draft.comparePriceText}
+                  onChange={(e) => setDraft({ ...draft, comparePriceText: e.target.value })}
+                  placeholder="15.000 Kz"
+                  className="w-full px-4 py-2.5 rounded-xl border border-[#D8C4BC] focus:outline-none focus:border-[#B85D6E] text-sm"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-[#2A1F1D] mb-1.5">
+                  Preço atual (Agora)
                 </label>
                 <input
                   type="text"

@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import {
+  ArrowRight,
   Clock,
   Infinity as InfinityIcon,
   Layers,
@@ -8,8 +9,7 @@ import {
   Sparkles,
 } from 'lucide-react';
 import { AdminPanel } from './components/AdminPanel.tsx';
-import { AttentionCtaButton, useCountdownTimer } from './components/CountdownCta.tsx';
-import { FloatingWhatsApp } from './components/FloatingWhatsApp.tsx';
+import { useOfferCountdown } from './components/CountdownHook.ts';
 import { Footer } from './components/Footer.tsx';
 import { GalleryAndTestimonials } from './components/GalleryAndTestimonials.tsx';
 import { Header } from './components/Header.tsx';
@@ -27,7 +27,7 @@ export default function App() {
   const [config, setConfig] = useState<SiteConfig>(DEFAULT_SITE_CONFIG);
   const [checkoutPendingNotice, setCheckoutPendingNotice] = useState(false);
   const offerRef = useRef<HTMLDivElement | null>(null);
-  const { formatted } = useCountdownTimer();
+  const countdown = useOfferCountdown();
 
   const pathname = typeof window !== 'undefined' ? window.location.pathname : '/';
   const isAdminRoute = pathname.startsWith('/admin');
@@ -37,14 +37,18 @@ export default function App() {
   useEffect(() => {
     let active = true;
     fetch('/api/config')
-      .then((res) => (res.ok ? res.json() : null))
+      .then((res) => {
+        const ct = res.headers.get('content-type') || '';
+        if (!res.ok || !ct.includes('application/json')) return null;
+        return res.json();
+      })
       .then((data: SiteConfig | null) => {
-        if (active && data) {
+        if (active && data && typeof data.courseName === 'string') {
           setConfig(data);
         }
       })
       .catch(() => {
-        // Keeps DEFAULT_SITE_CONFIG fallback
+        // Keeps DEFAULT_SITE_CONFIG fallback seamlessly on static hosts (Vercel)
       });
     return () => {
       active = false;
@@ -100,26 +104,10 @@ export default function App() {
 
   return (
     <div id="topo" className="min-h-screen flex flex-col bg-white text-[#230F17]">
-      <Header
-        courseName={config.courseName}
-        logoUrl={config.logoUrl}
-        checkoutUrl={config.checkoutUrl}
-        onCheckoutClick={handleCheckoutAction}
-      />
+      <Header courseName={config.courseName} logoUrl={config.logoUrl} />
 
       <main className="flex-1">
-        {/* FAIXA DE CONTAGEM DE URGÊNCIA NO TOPO */}
-        <div className="bg-[#230F17] text-white py-2.5 px-4 text-center border-b border-[#3E1C2A]">
-          <p className="text-xs sm:text-sm font-semibold flex flex-wrap items-center justify-center gap-2">
-            <span>Inscrições com acesso vitalício por {config.priceText}</span>
-            <span className="inline-flex items-center gap-1.5 bg-[#C21F5E] px-2.5 py-0.5 rounded-md font-bold tabular-nums">
-              <Clock className="w-3.5 h-3.5" />
-              Termina em {formatted}
-            </span>
-          </p>
-        </div>
-
-        {/* 1. HERO — FUNDO ROSA ENVOLVENTE E CTA DE CONTAGEM */}
+        {/* 1. HERO — COM CTA CONTADO NO INÍCIO DA PÁGINA */}
         <section className="py-10 sm:py-16 lg:py-20 bg-gradient-to-br from-[#F9D2E1] via-[#FCE8F0] to-[#FFF5F8] border-b border-[#EBB9CB]">
           <div className="max-w-6xl mx-auto px-4 sm:px-6">
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-stretch">
@@ -133,25 +121,45 @@ export default function App() {
                 </h1>
 
                 <p className="mt-5 text-base sm:text-lg text-[#4A2835] leading-relaxed max-w-2xl">
-                  Aprenda maquiagem do zero ao avançado com aulas gravadas, práticas e fáceis de
-                  acompanhar. Domine a preparação da pele, olhos marcantes e acabamentos perfeitos
-                  para fazer em si ou atender clientes com segurança.
+                  Aprenda maquiagem na pele negra do zero ao acabamento profissional com aulas
+                  gravadas, diretas e fáceis de acompanhar — para se maquilhar com segurança ou
+                  atender as suas primeiras clientes.
                 </p>
 
-                <div className="mt-8 flex flex-col sm:flex-row items-stretch sm:items-center gap-4">
-                  <AttentionCtaButton
-                    label="QUERO APRENDER MAQUIAGEM"
-                    checkoutUrl={config.checkoutUrl}
-                    onClick={handleCheckoutAction}
-                    showCountdown
-                  />
+                {/* CTA Contado no Início */}
+                <div className="mt-7 space-y-3">
+                  {config.comparePriceText && (
+                    <p className="text-sm sm:text-base font-semibold text-[#4A2835] tabular-nums">
+                      Antes:{' '}
+                      <span className="line-through text-[#8D5B6D]">{config.comparePriceText}</span>{' '}
+                      · Agora por apenas{' '}
+                      <strong className="text-[#C21F5E] text-lg">{config.priceText}</strong>
+                    </p>
+                  )}
 
-                  <a
-                    href="#demonstracao"
-                    className="inline-flex items-center justify-center px-6 py-4 rounded-xl border-2 border-[#C21F5E]/30 bg-white/90 hover:bg-white text-[#230F17] text-sm font-bold transition-colors whitespace-nowrap"
-                  >
-                    Ver demonstração em vídeo
-                  </a>
+                  <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3.5">
+                    <a
+                      href={config.checkoutUrl || '#oferta'}
+                      target={config.checkoutUrl ? '_blank' : undefined}
+                      rel={config.checkoutUrl ? 'noopener noreferrer' : undefined}
+                      onClick={handleCheckoutAction}
+                      className="inline-flex items-center justify-center gap-2.5 px-7 py-4 rounded-xl bg-[#C21F5E] hover:bg-[#9F164B] text-white text-sm sm:text-base font-bold shadow-lg transition-colors cursor-pointer whitespace-nowrap"
+                    >
+                      <span>QUERO GARANTIR O MEU ACESSO</span>
+                      <span className="inline-flex items-center gap-1 bg-black/25 px-2 py-0.5 rounded-md text-xs font-bold tabular-nums">
+                        <Clock className="w-3.5 h-3.5" />
+                        {countdown}
+                      </span>
+                      <ArrowRight className="w-5 h-5 shrink-0" />
+                    </a>
+
+                    <a
+                      href="#demonstracao"
+                      className="inline-flex items-center justify-center px-6 py-4 rounded-xl bg-white border-2 border-[#C21F5E]/30 hover:border-[#C21F5E] text-[#230F17] text-sm font-bold transition-colors whitespace-nowrap"
+                    >
+                      Ver aula demonstrativa
+                    </a>
+                  </div>
                 </div>
 
                 <div className="mt-8 pt-6 border-t border-[#E5B3C6] grid grid-cols-2 sm:grid-cols-4 gap-4 text-xs sm:text-sm font-semibold text-[#4A2835]">
@@ -186,8 +194,9 @@ export default function App() {
                 <div className="relative h-full min-h-[380px] sm:min-h-[460px] rounded-3xl overflow-hidden border-4 border-white bg-[#F9D2E1] shadow-2xl">
                   <SafeImage
                     src={config.heroImageUrl}
-                    alt="Mulher com maquiagem elegante e acabamento luminoso"
+                    alt="Mulher negra com maquiagem elegante e pele luminosa"
                     loading="eager"
+                    priority="high"
                     className="w-full h-full object-cover"
                   />
                   {config.logoUrl && (
@@ -196,6 +205,7 @@ export default function App() {
                         src={config.logoUrl}
                         alt={`Logotipo ${config.courseName}`}
                         loading="eager"
+                        priority="high"
                         className="w-full h-full object-cover scale-105"
                       />
                     </div>
@@ -206,7 +216,7 @@ export default function App() {
           </div>
         </section>
 
-        {/* 2. CONHEÇA O UNIVERSO MAQUIAGEM + APRENDA DO ZERO (COM CTA DE DESTAQUE) */}
+        {/* 2. CONHEÇA O UNIVERSO MAQUIAGEM */}
         <section id="curso" className="py-16 sm:py-22 bg-white">
           <div className="max-w-6xl mx-auto px-4 sm:px-6">
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-12 items-center mb-14">
@@ -214,7 +224,8 @@ export default function App() {
                 <div className="rounded-3xl overflow-hidden border-2 border-[#F2C9D8] bg-[#FCE8F0] shadow-lg aspect-[4/3]">
                   <SafeImage
                     src={config.courseImageUrl}
-                    alt="Demonstração prática de maquiagem no curso Universo Maquiagem"
+                    alt="Maquiadora negra aplicando iluminação em modelo negra no estúdio"
+                    loading="eager"
                     className="w-full h-full object-cover"
                   />
                 </div>
@@ -222,31 +233,22 @@ export default function App() {
 
               <div className="lg:col-span-6 order-1 lg:order-2">
                 <p className="text-xs font-bold tracking-[0.18em] uppercase text-[#C21F5E] mb-3">
-                  Como Funciona o Curso
+                  Sobre a Formação
                 </p>
                 <h2 className="font-display text-3xl sm:text-4xl lg:text-[42px] font-bold leading-[1.1] text-[#230F17] text-balance">
-                  Conheça o Universo Maquiagem e aprenda passo a passo
+                  Conheça o Universo Maquiagem e domine cada técnica passo a passo
                 </h2>
                 <div className="mt-5 space-y-4 text-base sm:text-lg text-[#4A2835] leading-relaxed">
                   <p>
-                    O <strong>{config.courseName}</strong> é uma formação digital com aulas gravadas
-                    em vídeo, criada para lhe ensinar do básico ao acabamento profissional de forma
-                    simples e prática.
+                    Uma formação digital prática com aulas gravadas que mostram, ao pormenor, como
+                    preparar a pele negra sem acinzentar, acertar no subtom da base e criar um
+                    acabamento limpo e duradouro.
                   </p>
                   <p>
-                    Pode assistir pelo seu <strong>telemóvel</strong> ou{' '}
-                    <strong>computador</strong>, pausar quando quiser e praticar cada técnica no
-                    conforto da sua casa.
+                    Assista diretamente pelo seu <strong>telemóvel</strong> ou{' '}
+                    <strong>computador</strong>, pause cada demonstração e pratique à frente do
+                    espelho no seu ritmo.
                   </p>
-                </div>
-
-                <div className="mt-7">
-                  <AttentionCtaButton
-                    label="QUERO COMEÇAR AGORA"
-                    checkoutUrl={config.checkoutUrl}
-                    onClick={handleCheckoutAction}
-                    showCountdown
-                  />
                 </div>
               </div>
             </div>
@@ -256,32 +258,32 @@ export default function App() {
                 {
                   icon: Sparkles,
                   title: 'Aprenda desde o zero',
-                  desc: 'Mesmo sem experiência, acompanha cada etapa da maquiagem sem complicação.',
+                  desc: 'Comece sem medo mesmo que nunca tenha feito uma maquiagem completa antes.',
                 },
                 {
                   icon: Layers,
                   title: 'Aulas gravadas e organizadas',
-                  desc: 'Conteúdo estruturado na ordem certa para ver evolução rápida.',
+                  desc: 'Passo a passo claro para acompanhar da preparação da pele até ao batom.',
                 },
                 {
                   icon: Clock,
                   title: 'Estude quando quiser',
-                  desc: 'Sem horários rígidos: assista no momento livre do seu dia.',
+                  desc: 'Sem horários fixos: assista no tempo livre do seu dia.',
                 },
                 {
                   icon: Smartphone,
                   title: 'Acompanhe pelo telemóvel',
-                  desc: 'Funciona perfeitamente no telemóvel, tablet ou computador.',
+                  desc: 'Veja as aulas com qualidade no seu telemóvel ou computador.',
                 },
                 {
                   icon: Repeat,
-                  title: 'Reveja os conteúdos',
-                  desc: 'Repita as aulas quantas vezes quiser até dominar cada detalhe.',
+                  title: 'Reveja sempre que precisar',
+                  desc: 'Volte às técnicas de contorno, olhos ou pele quantas vezes quiser.',
                 },
                 {
                   icon: InfinityIcon,
                   title: 'Acesso vitalício',
-                  desc: 'Investimento único com acesso permanente às aulas.',
+                  desc: 'Investimento único sem mensalidades, para sempre disponível para si.',
                 },
               ].map((benefit, idx) => {
                 const Icon = benefit.icon;
@@ -312,32 +314,24 @@ export default function App() {
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-12 items-start">
               <div className="lg:col-span-5">
                 <p className="text-xs font-bold tracking-[0.18em] uppercase text-[#A3154B] mb-3">
-                  Você identifica-se?
+                  Identificação
                 </p>
                 <h2 className="font-display text-3xl sm:text-4xl font-bold leading-[1.12] text-[#230F17] text-balance">
-                  Já quiseste fazer maquiagens bonitas, mas não sabes por onde começar?
+                  Já quiseste fazer uma maquiagem impecável, mas sentes que falta técnica?
                 </h2>
                 <p className="mt-4 text-base text-[#4A2835] leading-relaxed">
-                  Muitas mulheres compram produtos caros, tentam copiar vídeos rápidos e mesmo assim
-                  sentem que o resultado não fica como queriam.
+                  Sem saber a ordem e os segredos certos para a sua pele, até bons produtos acabam
+                  por não dar o brilho que merece.
                 </p>
-                <div className="mt-6">
-                  <AttentionCtaButton
-                    label="GARANTIR O MEU ACESSO"
-                    checkoutUrl={config.checkoutUrl}
-                    onClick={handleCheckoutAction}
-                    showCountdown
-                  />
-                </div>
               </div>
 
               <div className="lg:col-span-7 space-y-3">
                 {[
-                  'Não saber escolher a base e os produtos certos para o seu tom de pele.',
-                  'Ter dificuldades na preparação da pele, deixando a maquiagem marcada ou oleosa.',
-                  'Não conseguir fazer um esfumado limpo, harmonioso e bem acabado.',
-                  'Não conhecer a ordem correta de aplicação para a maquiagem durar horas.',
-                  'Ter vontade de aprender e até trabalhar com beleza, mas faltar um método claro.',
+                  'Dificuldade em escolher a base certa sem deixar o rosto acinzentado ou escuro demais.',
+                  'Preparação de pele que craquela na zona dos olhos ou fica oleosa rapidamente.',
+                  'Sombra marcada e dificuldade em conseguir um esfumado limpo e elegante.',
+                  'Dúvidas sobre onde aplicar o corretor, o contorno, o blush e o iluminador.',
+                  'Vontade de aprender para se sentir mais confiante ou começar a atender clientes.',
                 ].map((situation, index) => (
                   <div
                     key={index}
@@ -355,9 +349,9 @@ export default function App() {
                 <div className="pt-3">
                   <div className="rounded-2xl bg-[#230F17] text-white p-6 sm:p-7">
                     <p className="text-base sm:text-lg leading-relaxed text-[#FCE8F0]">
-                      No <strong className="text-white">{config.courseName}</strong>, aprende cada
-                      técnica na sequência certa — sem segredos, direto ao ponto e fácil de aplicar
-                      já nos primeiros dias.
+                      O <strong className="text-white">{config.courseName}</strong> entrega-lhe o
+                      método completo e organizado para transformar qualquer rosto com naturalidade,
+                      brilho e acabamento profissional.
                     </p>
                   </div>
                 </div>
@@ -373,21 +367,19 @@ export default function App() {
           testimonials={config.testimonials}
         />
 
-        {/* 5. VÍDEO DEMONSTRATIVO (VSL) */}
+        {/* 5. VÍDEO DEMONSTRATIVO (VSL REAL) */}
         <VideoSection
           videoUrl={config.videoUrl}
           posterUrl={config.videoPosterUrl}
-          checkoutUrl={config.checkoutUrl}
           onVideoPlay={() =>
             trackViewContent(config.courseName, config.priceNumeric, config.currencyCode)
           }
-          onCheckoutClick={handleCheckoutAction}
         />
 
         {/* MÓDULOS REAIS (EXIBIDO QUANDO CONFIGURADO) */}
         <ModulesSection modules={config.modules} />
 
-        {/* 6. OFERTA ESPECIAL + FAQ */}
+        {/* 6. OFERTA ESPECIAL COM CTA CONTADO + FAQ */}
         <div ref={offerRef}>
           <OfferAndTrust
             config={config}
@@ -402,11 +394,6 @@ export default function App() {
       <PurchaseNotifications
         courseName={config.courseName}
         priceText={config.priceText}
-      />
-
-      <FloatingWhatsApp
-        phoneNumber={config.whatsappNumber}
-        message={config.whatsappMessage}
       />
     </div>
   );

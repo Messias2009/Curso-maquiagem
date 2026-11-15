@@ -22,6 +22,7 @@ export interface TestimonialImage {
 export interface SiteConfig {
   courseName: string;
   logoUrl: string;
+  comparePriceText: string;
   priceText: string;
   priceNumeric: number;
   currencyCode: string;

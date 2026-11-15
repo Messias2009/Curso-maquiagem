@@ -3,6 +3,7 @@ import type { SiteConfig } from '../types/config.ts';
 export const DEFAULT_SITE_CONFIG: SiteConfig = {
   courseName: 'Universo Maquiagem',
   logoUrl: '/assets/aistudio/file_000000006b7471f4956a18565d37ddfd_81b6ace5.png',
+  comparePriceText: '15.000 Kz',
   priceText: '4.400 Kz',
   priceNumeric: 4400,
   currencyCode: 'AOA',
@@ -12,9 +13,9 @@ export const DEFAULT_SITE_CONFIG: SiteConfig = {
     'Olá! Tenho interesse no curso Universo Maquiagem e gostaria de esclarecer algumas dúvidas.',
   supportEmail: 'suporte@universomaquiagem.com',
   heroImageUrl: '/src/assets/images/hero_makeup_model_1794755648886.jpg',
-  courseImageUrl: '/src/assets/images/course_demo_studio_1794755649732.jpg',
-  videoUrl: '',
-  videoPosterUrl: '/src/assets/images/video_poster_makeup_1794755649044.jpg',
+  courseImageUrl: '/src/assets/images/course_demo_black_women_1794763985917.jpg',
+  videoUrl: '/assets/aistudio/demo_1cd600ca.mp4',
+  videoPosterUrl: '/src/assets/images/video_poster_black_model_1794763988454.jpg',
   metaPixelId: '',
   modules: [],
   beforeAfterImages: [

@@ -152,6 +152,10 @@ async function startServer() {
         typeof incoming.logoUrl === 'string' && incoming.logoUrl.trim()
           ? incoming.logoUrl.trim()
           : current.logoUrl,
+      comparePriceText:
+        typeof incoming.comparePriceText === 'string'
+          ? incoming.comparePriceText.trim()
+          : current.comparePriceText,
       priceText:
         typeof incoming.priceText === 'string' && incoming.priceText.trim()
           ? incoming.priceText.trim()
