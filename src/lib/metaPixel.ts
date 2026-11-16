@@ -5,12 +5,16 @@ declare global {
   }
 }
 
-let initializedPixelId = '';
+const ADDITIONAL_PIXEL_ID = '1940835167079209';
+let initializedPixelIds: string[] = [];
 
 export function initMetaPixel(pixelId: string) {
-  const cleanId = pixelId.trim().replace(/\D/g, '');
-  if (!cleanId || typeof window === 'undefined') return;
-  if (initializedPixelId === cleanId) return;
+  const configuredId = pixelId.trim().replace(/\D/g, '');
+  const pixelIdsToInitialize = [...new Set([configuredId, ADDITIONAL_PIXEL_ID].filter(Boolean))];
+  if (pixelIdsToInitialize.length === 0 || typeof window === 'undefined') return;
+
+  const newPixelIds = pixelIdsToInitialize.filter((id) => !initializedPixelIds.includes(id));
+  if (newPixelIds.length === 0) return;
 
   if (!window.fbq) {
     const fbqStub = function (...args: unknown[]) {
@@ -42,22 +46,27 @@ export function initMetaPixel(pixelId: string) {
     document.head.appendChild(script);
   }
 
-  initializedPixelId = cleanId;
-  window.fbq('init', cleanId);
-  window.fbq('track', 'PageView');
+  for (const id of newPixelIds) {
+    window.fbq('init', id);
+    window.fbq('trackSingle', id, 'PageView');
+  }
+
+  initializedPixelIds = [...initializedPixelIds, ...newPixelIds];
 }
 
 export function trackViewContent(courseName: string, priceNumeric: number, currencyCode: string) {
-  if (!window.fbq || !initializedPixelId) return;
+  if (!window.fbq || initializedPixelIds.length === 0) return;
   const key = 'um_pixel_view_content';
   if (sessionStorage.getItem(key)) return;
   sessionStorage.setItem(key, '1');
-  window.fbq('track', 'ViewContent', {
-    content_name: courseName,
-    content_type: 'product',
-    value: priceNumeric,
-    currency: currencyCode || 'AOA',
-  });
+  for (const id of initializedPixelIds) {
+    window.fbq('trackSingle', id, 'ViewContent', {
+      content_name: courseName,
+      content_type: 'product',
+      value: priceNumeric,
+      currency: currencyCode || 'AOA',
+    });
+  }
 }
 
 export function trackInitiateCheckout(
@@ -65,14 +74,16 @@ export function trackInitiateCheckout(
   priceNumeric: number,
   currencyCode: string,
 ) {
-  if (!window.fbq || !initializedPixelId) return;
-  window.fbq('track', 'InitiateCheckout', {
-    content_name: courseName,
-    content_type: 'product',
-    num_items: 1,
-    value: priceNumeric,
-    currency: currencyCode || 'AOA',
-  });
+  if (!window.fbq || initializedPixelIds.length === 0) return;
+  for (const id of initializedPixelIds) {
+    window.fbq('trackSingle', id, 'InitiateCheckout', {
+      content_name: courseName,
+      content_type: 'product',
+      num_items: 1,
+      value: priceNumeric,
+      currency: currencyCode || 'AOA',
+    });
+  }
 }
 
 export function trackConfirmedPurchase(
@@ -81,16 +92,18 @@ export function trackConfirmedPurchase(
   priceNumeric: number,
   currencyCode: string,
 ) {
-  if (!window.fbq || !initializedPixelId) return;
+  if (!window.fbq || initializedPixelIds.length === 0) return;
   const dedupKey = `um_pixel_purchase_${orderId}`;
   if (sessionStorage.getItem(dedupKey)) return;
   sessionStorage.setItem(dedupKey, '1');
-  window.fbq('track', 'Purchase', {
-    content_name: courseName,
-    content_type: 'product',
-    num_items: 1,
-    value: priceNumeric,
-    currency: currencyCode || 'AOA',
-    order_id: orderId,
-  });
+  for (const id of initializedPixelIds) {
+    window.fbq('trackSingle', id, 'Purchase', {
+      content_name: courseName,
+      content_type: 'product',
+      num_items: 1,
+      value: priceNumeric,
+      currency: currencyCode || 'AOA',
+      order_id: orderId,
+    });
+  }
 }
