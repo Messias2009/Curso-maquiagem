@@ -1,5 +1,5 @@
 export function WhatsAppContact() {
-  const phone = '244932415854';
+  const phone = '244952018903';
   const message = encodeURIComponent(
     'Olá! Tenho interesse no curso Universo Maquiagem e gostaria de esclarecer algumas dúvidas antes de efetuar o pagamento.',
   );
