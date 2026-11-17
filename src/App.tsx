@@ -19,6 +19,7 @@ import { PaymentConfirmationPage } from './components/PaymentConfirmationPage.ts
 import { PurchaseNotifications } from './components/PurchaseNotifications.tsx';
 import { SafeImage } from './components/SafeImage.tsx';
 import { VideoSection } from './components/VideoSection.tsx';
+import { WhatsAppContact } from './components/WhatsAppContact.tsx';
 import { DEFAULT_SITE_CONFIG } from './lib/defaultConfig.ts';
 import { initMetaPixel, trackInitiateCheckout, trackViewContent } from './lib/metaPixel.ts';
 import type { SiteConfig } from './types/config.ts';
@@ -377,6 +378,7 @@ export default function App() {
       </main>
 
       <Footer courseName={config.courseName} logoUrl={config.logoUrl} />
+      <WhatsAppContact />
 
       <PurchaseNotifications
         courseName={config.courseName}
