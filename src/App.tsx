@@ -127,9 +127,8 @@ export default function App() {
           <div className="max-w-6xl mx-auto px-4 sm:px-6">
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-center">
               <div className="lg:col-span-7 flex flex-col justify-center">
-                <p className="inline-flex w-fit items-center gap-2 rounded-full bg-white/80 border border-[#E9B3C8] px-3 py-1.5 text-[11px] sm:text-xs font-extrabold tracking-[0.16em] uppercase text-[#A3154B] mb-4">
-                  <Sparkles className="w-4 h-4" />
-                  Universo Maquiagem · Curso online
+                <p className="inline-flex w-fit items-center rounded-full bg-[#C21F5E]/10 border border-[#C21F5E]/30 px-3.5 py-2 text-[11px] sm:text-xs font-black tracking-[0.14em] uppercase text-[#971344] mb-4">
+                  MAIS DE 15 VIDEOAULAS · FORMAÇÃO EM MAQUIAGEM
                 </p>
 
                 <h1 className="font-display text-[34px] sm:text-5xl lg:text-[54px] font-bold leading-[1.04] tracking-tight text-[#230F17] text-balance">
