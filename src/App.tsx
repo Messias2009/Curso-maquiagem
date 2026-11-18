@@ -1,12 +1,15 @@
 import { useEffect, useRef, useState } from 'react';
 import {
   ArrowRight,
+  CheckCircle2,
   Clock,
   Infinity as InfinityIcon,
   Layers,
+  Mail,
   Repeat,
   Smartphone,
   Sparkles,
+  Video,
 } from 'lucide-react';
 import { AdminPanel } from './components/AdminPanel.tsx';
 import { useOfferCountdown } from './components/CountdownHook.ts';
@@ -119,76 +122,102 @@ export default function App() {
       </div>
 
       <main className="flex-1">
-        {/* 1. HERO — COM CTA CONTADO NO INÍCIO DA PÁGINA */}
-        <section className="py-10 sm:py-16 lg:py-20 bg-gradient-to-br from-[#F9D2E1] via-[#FCE8F0] to-[#FFF5F8] border-b border-[#EBB9CB]">
+        {/* 1. HERO — APRESENTA O QUE A ALUNA VAI APRENDER LOGO NA ENTRADA */}
+        <section className="py-9 sm:py-14 lg:py-16 bg-gradient-to-br from-[#F9D2E1] via-[#FCE8F0] to-[#FFF7FA] border-b border-[#EBB9CB]">
           <div className="max-w-6xl mx-auto px-4 sm:px-6">
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-stretch">
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-center">
               <div className="lg:col-span-7 flex flex-col justify-center">
-                <p className="text-xs font-bold tracking-[0.2em] uppercase text-[#A3154B] mb-3">
-                  Beleza · Conhecimento · Confiança
+                <p className="inline-flex w-fit items-center gap-2 rounded-full bg-white/80 border border-[#E9B3C8] px-3 py-1.5 text-[11px] sm:text-xs font-extrabold tracking-[0.16em] uppercase text-[#A3154B] mb-4">
+                  <Sparkles className="w-4 h-4" />
+                  Universo Maquiagem · Curso online
                 </p>
 
-                <h1 className="font-display text-[34px] sm:text-5xl lg:text-[54px] font-bold leading-[1.06] tracking-tight text-[#230F17] text-balance">
-                  TRANSFORME A SUA PAIXÃO PELA MAQUIAGEM NUMA NOVA HABILIDADE!
+                <h1 className="font-display text-[34px] sm:text-5xl lg:text-[54px] font-bold leading-[1.04] tracking-tight text-[#230F17] text-balance">
+                  APRENDE A FAZER MAQUIAGENS INCRÍVEIS, DO ZERO AO AVANÇADO!
                 </h1>
 
-                <p className="mt-5 text-base sm:text-lg text-[#4A2835] leading-relaxed max-w-2xl">
-                  Aprenda maquiagem na pele negra do zero ao acabamento profissional com aulas
-                  gravadas, diretas e fáceis de acompanhar — para se maquilhar com segurança ou
-                  atender as suas primeiras clientes.
+                <p className="mt-4 text-base sm:text-lg text-[#4A2835] leading-relaxed max-w-2xl">
+                  Descobre técnicas para preparar a pele, escolher e aplicar a base, fazer contorno,
+                  iluminar, maquilhar os olhos e criar um acabamento bonito e harmonioso — mesmo
+                  que estejas a começar agora.
                 </p>
 
-                {/* CTA inicial sem exibição de preços; valores aparecem apenas na secção da oferta */}
-                <div className="mt-7 space-y-3">
-                  <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3.5">
-                    <a
-                      href="#demonstracao"
-                      className="inline-flex items-center justify-center px-6 py-4 rounded-xl bg-white border-2 border-[#C21F5E]/30 hover:border-[#C21F5E] text-[#230F17] text-sm font-bold transition-colors whitespace-nowrap"
-                    >
-                      Ver aula demonstrativa
-                    </a>
+                <div className="mt-6 rounded-2xl bg-white/85 border border-[#EBC1D1] p-5 sm:p-6 shadow-sm">
+                  <h2 className="font-display text-xl sm:text-2xl font-bold text-[#230F17] mb-4">
+                    O que vais aprender no curso:
+                  </h2>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-5 gap-y-3">
+                    {[
+                      'Preparação e cuidados da pele',
+                      'Escolha e aplicação da base e corretivo',
+                      'Contorno, blush e iluminação',
+                      'Preenchimento e definição das sobrancelhas',
+                      'Maquiagem dos olhos, sombras e esfumado',
+                      'Delineado, cílios e acabamento dos olhos',
+                      'Maquiagem dos lábios',
+                      'Como criar uma maquiagem completa',
+                    ].map((item) => (
+                      <div key={item} className="flex items-start gap-2.5 text-sm sm:text-[15px] font-medium text-[#432631]">
+                        <CheckCircle2 className="w-5 h-5 text-[#C21F5E] shrink-0 mt-0.5" />
+                        <span>{item}</span>
+                      </div>
+                    ))}
                   </div>
                 </div>
 
-                <div className="mt-8 pt-6 border-t border-[#E5B3C6] grid grid-cols-2 sm:grid-cols-4 gap-4 text-xs sm:text-sm font-semibold text-[#4A2835]">
-                  <div className="flex items-center gap-2">
-                    <span className="text-[#C21F5E]" aria-hidden="true">
-                      •
-                    </span>
-                    <span>Curso 100% online</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <span className="text-[#C21F5E]" aria-hidden="true">
-                      •
-                    </span>
-                    <span>Aulas gravadas</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <span className="text-[#C21F5E]" aria-hidden="true">
-                      •
-                    </span>
-                    <span>Acesso vitalício</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <span className="text-[#C21F5E]" aria-hidden="true">
-                      •
-                    </span>
-                    <span>No seu próprio ritmo</span>
-                  </div>
+                <div className="mt-6 flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
+                  <a
+                    href="#oferta"
+                    className="inline-flex items-center justify-center gap-2 px-6 py-4 rounded-xl bg-[#C21F5E] hover:bg-[#9F164B] text-white text-sm sm:text-base font-extrabold shadow-lg shadow-[#C21F5E]/20 transition-colors"
+                  >
+                    QUERO APRENDER MAQUIAGEM
+                    <ArrowRight className="w-5 h-5" />
+                  </a>
+                  <a
+                    href="#demonstracao"
+                    className="inline-flex items-center justify-center gap-2 px-5 py-4 rounded-xl bg-white border-2 border-[#C21F5E]/25 hover:border-[#C21F5E] text-[#230F17] text-sm font-bold transition-colors"
+                  >
+                    <Video className="w-4 h-4 text-[#C21F5E]" />
+                    Ver aula demonstrativa
+                  </a>
+                </div>
+
+                <div className="mt-5 rounded-xl bg-[#230F17] text-white p-4 sm:p-5 flex items-start gap-3">
+                  <Mail className="w-6 h-6 text-[#F9B4CD] shrink-0 mt-0.5" />
+                  <p className="text-sm sm:text-[15px] leading-relaxed text-white/95">
+                    <strong className="text-white">Como recebes o curso?</strong>{' '}
+                    Depois da confirmação do pagamento, recebes diretamente no teu e-mail o link
+                    e as instruções para aceder às videoaulas.
+                  </p>
+                </div>
+
+                <div className="mt-5 flex flex-wrap gap-x-5 gap-y-2 text-xs sm:text-sm font-semibold text-[#4A2835]">
+                  <span className="inline-flex items-center gap-1.5"><CheckCircle2 className="w-4 h-4 text-[#C21F5E]" /> Aulas gravadas</span>
+                  <span className="inline-flex items-center gap-1.5"><CheckCircle2 className="w-4 h-4 text-[#C21F5E]" /> Aprende ao teu ritmo</span>
+                  <span className="inline-flex items-center gap-1.5"><InfinityIcon className="w-4 h-4 text-[#C21F5E]" /> Acesso vitalício</span>
+                  <span className="inline-flex items-center gap-1.5"><Smartphone className="w-4 h-4 text-[#C21F5E]" /> Telemóvel ou computador</span>
                 </div>
               </div>
 
               <div className="lg:col-span-5">
-                <div className="relative h-full min-h-[380px] sm:min-h-[460px] rounded-3xl overflow-hidden border-4 border-white bg-[#F9D2E1] shadow-2xl">
+                <div className="relative min-h-[360px] sm:min-h-[470px] lg:min-h-[590px] rounded-3xl overflow-hidden border-4 border-white bg-[#F9D2E1] shadow-2xl">
                   <SafeImage
                     src={config.heroImageUrl}
-                    alt="Mulher negra com maquiagem elegante e pele luminosa"
+                    alt="Modelo negra com maquiagem elegante e pele luminosa"
                     loading="eager"
                     priority="high"
-                    className="w-full h-full object-cover"
+                    className="absolute inset-0 w-full h-full object-cover"
                   />
+                  <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-[#230F17]/85 via-[#230F17]/25 to-transparent p-5 sm:p-6">
+                    <p className="text-white font-display text-xl sm:text-2xl font-bold">
+                      Aprende. Pratica. Evolui.
+                    </p>
+                    <p className="text-white/90 text-sm mt-1">
+                      Técnicas explicadas em videoaulas para acompanhares passo a passo.
+                    </p>
+                  </div>
                   {config.logoUrl && (
-                    <div className="absolute bottom-4 right-4 w-20 h-20 sm:w-24 sm:h-24 rounded-full overflow-hidden border-2 border-white shadow-xl bg-[#F9B4CD]">
+                    <div className="absolute top-4 right-4 w-16 h-16 sm:w-20 sm:h-20 rounded-full overflow-hidden border-2 border-white shadow-xl bg-[#F9B4CD]">
                       <SafeImage
                         src={config.logoUrl}
                         alt={`Logotipo ${config.courseName}`}
