@@ -473,34 +473,6 @@ export function AdminPanel({ initialConfig, onConfigSaved }: AdminPanelProps) {
             </div>
           </section>
 
-          {/* 2. Meta Pixel */}
-          <section className="bg-white rounded-2xl border border-[#E7D8D2] p-6 sm:p-8 space-y-4">
-            <h2 className="font-display text-2xl font-semibold text-[#2A1F1D] border-b border-[#F0E4DF] pb-3">
-              2. Meta Pixel e Rastreamento
-            </h2>
-            <div>
-              <label className="block text-sm font-medium text-[#2A1F1D] mb-1.5">
-                ID do Meta Pixel (somente números)
-              </label>
-              <input
-                type="text"
-                value={draft.metaPixelId}
-                onChange={(e) => setDraft({ ...draft, metaPixelId: e.target.value })}
-                placeholder="Ex: 123456789012345"
-                className="w-full px-4 py-2.5 rounded-xl border border-[#D8C4BC] focus:outline-none focus:border-[#B85D6E] text-sm"
-              />
-            </div>
-            <div className="rounded-xl bg-[#F6ECE8] p-4 text-xs sm:text-sm text-[#5A4743] leading-relaxed">
-              <strong>Eventos configurados:</strong> <code>PageView</code> ao carregar,{' '}
-              <code>ViewContent</code> ao explorar a demonstração/oferta,{' '}
-              <code>InitiateCheckout</code> ao clicar nos botões de compra, e <code>Purchase</code>{' '}
-              exclusivamente quando o checkout redireciona após confirmação real para:{' '}
-              <code className="bg-white px-2 py-0.5 rounded border border-[#E7D8D2] text-[#2A1F1D]">
-                {window.location.origin}/confirmacao?payment_status=confirmed&order_id=ID
-              </code>
-            </div>
-          </section>
-
           {/* 3. Imagem Principal, Apresentação e Vídeo */}
           <section className="bg-white rounded-2xl border border-[#E7D8D2] p-6 sm:p-8 space-y-6">
             <h2 className="font-display text-2xl font-semibold text-[#2A1F1D] border-b border-[#F0E4DF] pb-3">
