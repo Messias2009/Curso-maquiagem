@@ -415,7 +415,7 @@ export function AdminPanel({ initialConfig, onConfigSaved }: AdminPanelProps) {
                   type="text"
                   value={draft.priceText}
                   onChange={(e) => setDraft({ ...draft, priceText: e.target.value })}
-                  placeholder="4.400 Kz"
+                  placeholder="2.500 Kz"
                   className="w-full px-4 py-2.5 rounded-xl border border-[#D8C4BC] focus:outline-none focus:border-[#B85D6E] text-sm"
                 />
               </div>
